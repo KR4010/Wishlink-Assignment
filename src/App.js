@@ -1,16 +1,22 @@
 import React from 'react';
 import { ReactDOM } from 'react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
-const TextBox = () => {
-    return (
-        <>
-        <input className = "textbox" type="text" placeholder="Text"/>
-        </>
-    );
-}
+
 
 const App = () => {
+
+    
+    const [mouseXY, setMouseXY] = useState({ X: null, Y: null });
+    useEffect(() => {
+        function handle(e) {
+        setMouseXY({
+            X: e.pageX,
+            Y: e.pageY
+        });
+        }
+        document.images[0].addEventListener("click", handle);
+    });
     
     const [tags, setTags] = useState([]);
 
@@ -28,19 +34,27 @@ const App = () => {
     setTags(prevTags => prevTags.filter((tag) => tag !== removedTag));
     }
 
-  
+    const [display, setDisplay] = useState(false);
+    const TextBox = () => {
+        return(
+        <>
+        <input onKeyDown={addTag} className = "textbox" type="text" placeholder="Text" style = {{position: 'absolute', left:mouseXY.X, top:mouseXY.Y}}/>
+        </>
+        );
+    }
+
     return (
         <div className='App'>
         <h1>hello</h1>
-        <span><img src={require("./download.png")}></img></span>
+        <TextBox/>
+        <span><img src={require("./download.png")} id="img"></img></span> 
         {tags.map((tag, index) => {
           return (
-            <div key={tag+index}>
+            <div className = "tag" key={tag+index}>
               {tag} <span onClick={() => removeTag(tag)}>x</span>
             </div>
           );
         })}
-        <input onKeyDown={addTag} />
         </div>
     );
 
