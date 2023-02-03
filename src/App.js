@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { ReactDOM } from 'react';
 import { useState, useEffect } from 'react';
 
@@ -6,7 +7,6 @@ import { useState, useEffect } from 'react';
 
 const App = () => {
 
-    
     const [mouseXY, setMouseXY] = useState({ X: null, Y: null });
     useEffect(() => {
         function handle(e) {
@@ -17,15 +17,16 @@ const App = () => {
         }
         document.images[0].addEventListener("click", handle);
     });
-    
-    const [tags, setTags] = useState([]);
+    const [Visibility, setVisibility] = useState('hidden')
+    const [tags, setTags] = useState([{value:null,X:null,Y:null}]);
 
     const addTag = (e) => {
     if (e.key === "Enter") {
         const newVal = e.target.value;
         if (newVal.length > 0) {
-            setTags(prevTags => [...prevTags, newVal]);
+            setTags(prevTags => [...prevTags, {value:newVal, X:mouseXY.X, Y:mouseXY.Y}]);
             e.target.value = '';
+            setVisibility('hidden');
         }
         }
     };
@@ -34,11 +35,10 @@ const App = () => {
     setTags(prevTags => prevTags.filter((tag) => tag !== removedTag));
     }
 
-    const [display, setDisplay] = useState(false);
     const TextBox = () => {
         return(
         <>
-        <input onKeyDown={addTag} className = "textbox" type="text" placeholder="Text" style = {{position: 'absolute', left:mouseXY.X, top:mouseXY.Y}}/>
+        <input onKeyDown={addTag} className = "textbox" type="text" placeholder="" style = {{position: 'absolute', left:mouseXY.X, top:mouseXY.Y}}/>
         </>
         );
     }
@@ -46,12 +46,13 @@ const App = () => {
     return (
         <div className='App'>
         <h1>hello</h1>
-        <TextBox/>
-        <span><img src={require("./download.png")} id="img"></img></span> 
+        <span><img src={require("./download.png")} id="img" onClick={()=>setVisibility('visible')}></img></span> 
+        {Visibility=='visible'? <TextBox/> : <div/>}
         {tags.map((tag, index) => {
           return (
             <div className = "tag" key={tag+index}>
-              {tag} <span onClick={() => removeTag(tag)}>x</span>
+              {tag.value} {tag.X} {tag.Y}
+              {tag.X!=null ? <span onClick={() => removeTag(tag)}> x </span> : <div/>}
             </div>
           );
         })}
