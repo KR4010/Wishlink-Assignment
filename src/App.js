@@ -45,8 +45,9 @@ const App = () => {
 
     return (
         <div className='App'>
-        <h1>hello</h1>
-        <span><img src={require("./download.png")} id="img" onClick={()=>setVisibility('visible')}></img></span> 
+        <span><img 
+        src={("https://cdn.pixabay.com/photo/2018/01/12/10/19/fantasy-3077928__480.jpg") } 
+        id="img" onClick={()=>setVisibility('visible')} style={{height: 500, width: 600}}></img></span> 
         {Visibility=='visible'? <TextBox/> : <div/>}
         {tags.map((tag, index) => {
           return (
